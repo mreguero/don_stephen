@@ -13,6 +13,7 @@ from .tasks import gen_feature_file, make_test_funcs
 
 from behave.configuration import Configuration
 from behave.runner import Runner
+from app.tasks import add_to_repo
 
 def home(request):
     """Renders the home page."""
@@ -43,7 +44,8 @@ def home(request):
             conf.format = [ conf.default_format ]
             runner = Runner(conf)
             runner.run()
-            make_test_funcs(runner.undefined_steps, feature.id)
+            filename = make_test_funcs(runner.undefined_steps, feature.id)
+            add_to_repo(filename, feature.description)
         return render(         request,
             'app/index.html',
             context_instance = RequestContext(request,

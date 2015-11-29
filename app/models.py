@@ -12,12 +12,12 @@ class Project(models.Model):
 
 
 class Feature(models.Model):
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, verbose_name='Description')
     finality = models.CharField(max_length=255)
     who = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
     ffile = models.FileField(upload_to='features')
-    project = models.ForeignKey(Project)
+    #project = models.ForeignKey(Project)
 
 
 class Scenario(models.Model):

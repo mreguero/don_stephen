@@ -1,3 +1,4 @@
+﻿import os
 from django.template import loader
 from django.core.files.base import ContentFile
 from .models import Feature
@@ -24,7 +25,15 @@ def gen_feature_file(feature_id):
 
 def make_test_funcs(steps, feature_id):
 
-    with open('media\\steps\\test_{}.py'.format(feature_id), 'w') as f:
+    with open('stephen_demo_repo\\test_{}.py'.format(feature_id), 'w') as f:
         for step in steps:
             test_fun = make_undefined_step_snippet(step)
             f.write(test_fun)
+    return "test_{}.py".format(feature_id)
+
+def add_to_repo(filename, feature):
+    os.chdir(r'C:\Users\miguel\Documents\GitHub\don_stephen\stephen_demo_repo')
+    os.system('git add {}'.format(filename))
+    os.system('git commit -m "Added tests for feature {}'.format(feature))
+    os.system('git push origin master')
+    os.chdir(r"C:\Users\miguel\Documents\GitHub\don_stephen")
