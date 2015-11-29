@@ -11,6 +11,6 @@ router.on('route:home', function () {
     projectListView.render()
 })
 router.on('route:new', function (id) {
-    featureNewView.render()
+    featureNewView.render(id)
 })
 Backbone.history.start();

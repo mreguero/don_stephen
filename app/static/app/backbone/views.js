@@ -67,7 +67,7 @@ var FeatureNewView = Backbone.View.extend({
     },
     render: function (options) {
         var that = this;
-        var template = _.template($('#feature-form-template').html(), {});
+        var template = _.template($('#feature-form-template').html(), {project: options});
         that.$el.html(template);
     }
 });

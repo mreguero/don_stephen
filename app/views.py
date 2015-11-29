@@ -7,6 +7,7 @@ import subprocess
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from django.template import RequestContext
+from django.conf import settings
 from datetime import datetime
 from .forms import FeatureForm
 from .models import Feature, Scenario, Project
@@ -41,7 +42,7 @@ def home(request):
             scenario = Scenario(given=form.cleaned_data['given'], when=form.cleaned_data['when'], then=form.cleaned_data['then'], title=form.cleaned_data['title'], feature=feature)
             scenario.save()
             gen_feature_file(feature.id)
-            conf = Configuration('media/features/{}.feature'.format(feature.id))
+            conf = Configuration(os.path.join(settings.PROJECT_ROOT, 'media', 'features', '{}.feature'.format(feature.id)))
             conf.format = [ conf.default_format ]
             runner = Runner(conf)
             runner.run()
@@ -100,7 +101,7 @@ def project_list(request):
 def feature_new(request):
     print(request.POST)
     form = json.loads(request.body.decode('utf-8'))
-    feature = Feature(description=form['description'], finality=form['finality'], who=form['who'], purpose=form['purpose'])
+    feature = Feature(description=form['description'], finality=form['finality'], who=form['who'], purpose=form['purpose'], project_id=form['project'])
     feature.save()
 
     scenario = Scenario(given=form['given'], when=form['when'], then=form['then'], title=form['title'], feature=feature)

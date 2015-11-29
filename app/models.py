@@ -17,7 +17,7 @@ class Feature(models.Model):
     who = models.CharField(max_length=255)
     purpose = models.CharField(max_length=255)
     ffile = models.FileField(upload_to='features')
-    #project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project)
 
 
 class Scenario(models.Model):
