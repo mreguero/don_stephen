@@ -2,13 +2,14 @@
 Definition of views.
 """
 import os
+import json
 import subprocess
 from django.shortcuts import render
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.template import RequestContext
 from datetime import datetime
 from .forms import FeatureForm
-from .models import Feature, Scenario
+from .models import Feature, Scenario, Project
 from .tasks import gen_feature_file, make_test_funcs
 
 from behave.configuration import Configuration
@@ -85,3 +86,30 @@ def about(request):
             'year':datetime.now().year,
         })
     )
+
+def project_list(request):
+    assert isinstance(request, HttpRequest)
+    projs = Project.objects.all()
+    data = []
+    for project in projs:
+        proj = {'id': project.id,
+                'name': project.name}
+        data.append(proj)
+    return HttpResponse(json.dumps(data))
+
+def feature_new(request):
+    print(request.POST)
+    form = json.loads(request.body.decode('utf-8'))
+    feature = Feature(description=form['description'], finality=form['finality'], who=form['who'], purpose=form['purpose'])
+    feature.save()
+
+    scenario = Scenario(given=form['given'], when=form['when'], then=form['then'], title=form['title'], feature=feature)
+    scenario.save()
+    gen_feature_file(feature.id)
+    conf = Configuration('media/features/{}.feature'.format(feature.id))
+    conf.format = [ conf.default_format ]
+    runner = Runner(conf)
+    runner.run()
+    filename = make_test_funcs(runner.undefined_steps, feature.id)
+    add_to_repo(filename, feature.description)
+    return HttpResponse()
