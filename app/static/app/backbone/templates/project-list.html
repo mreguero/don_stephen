@@ -1,0 +1,16 @@
+﻿<table class="table striped">
+    <thead>
+        <tr>
+            <th>Project name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% _.each(projects, function(project) { %>
+        <tr>
+            <td><%= htmlEncode(project.get('name')) %></td>
+            <td><a class="btn" href="#/feature/new/<%= project.id %>">New Feature</a></td>
+        </tr>
+        <% }); %>
+    </tbody>
+</table>
